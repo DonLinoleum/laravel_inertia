@@ -1,0 +1,109 @@
+@use "./vars" as *;
+@use "sass:map";
+
+$breakpoints: (
+    "phone": 400px,
+    "phone-wide": 480px,
+    "phablet": 560px,
+    "tablet-small": 650px,
+    "tablet": 768px,
+    "tablet-wide": 1024px,
+    "desktop": 1248px,
+    "desktop-wide": 1440px,
+);
+
+$z-indexes: (
+    "outdated-browser",
+    "modal",
+    "site-header",
+    "page-wrapper",
+    "site-footer"
+);
+
+@mixin input-placeholder {
+    &.placeholder {
+        @content;
+    }
+    &:-moz-placeholder {
+        @content;
+    }
+    &::-moz-placeholder {
+        @content;
+    }
+    &:-ms-input-placeholder {
+        @content;
+    }
+    &::-webkit-input-placeholder {
+        @content;
+    }
+}
+
+@mixin mq($width, $type: max) {
+    @if map.has-key($breakpoints, $width) {
+        $width: map.get($breakpoints, $width);
+        @if $type == max {
+            $width: $width - 1px;
+        }
+        @media only screen and (#{$type}-width: $width) {
+            @content;
+        }
+    }
+}
+
+@function z($name) {
+    @if index($z-indexes, $name) {
+        @return (length($z-indexes) - index($z-indexes, $name)) + 1;
+    } @else {
+        @warn 'There is no item "#{$name}" in this list; chose on of: #{$z-indexes}';
+        @return null;
+    }
+}
+
+@mixin PrimaryShadow {
+    box-shadow: 0 0 8px $primary;
+}
+@mixin ErrorShadow {
+    box-shadow: 0 0 8px $error;
+}
+
+@mixin GlassEffect {
+    backdrop-filter: blur(50px);
+    background-color: $black-50;
+}
+
+@mixin H1 {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 36px;
+}
+
+@mixin H2 {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 30px;
+}
+@mixin H3 {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 26px;
+
+    @include mq("desktop-wide") {
+        font-size: 24px;
+    }
+}
+
+@mixin Text-base {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 16px;
+}
+@mixin Text-large {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 22px;
+}
+@mixin Text-small {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 14px;
+}
