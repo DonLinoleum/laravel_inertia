@@ -1,7 +1,13 @@
 <script lang="ts" setup>
-import { router, Link } from "@inertiajs/vue3";
+import { router, Link, usePage } from "@inertiajs/vue3";
 import { LayoutRoutes } from "~/Routing/index";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/vue/16/solid";
+import Avatar from "~/Components/Avatar/Avatar.vue";
+import { computed } from "vue";
+import { IUser } from "~/Types/User";
+
+const page = usePage();
+const authUser: IUser = computed(() => page.props.auth.user);
 
 async function logout() {
     await router.post("/logout");
@@ -12,7 +18,10 @@ async function logout() {
     <div class="layout">
         <nav class="layout__navbar navbar">
             <div class="navbar__inner">
-                <div class="navbar__user"></div>
+                <div class="navbar__user">
+                    <Avatar size="small" />
+                    <h2>{{ authUser.name }}</h2>
+                </div>
                 <div class="navbar__menu">
                     <Link
                         v-for="route in LayoutRoutes"
@@ -58,6 +67,62 @@ async function logout() {
         border-right: 1px solid gray;
         backdrop-filter: blur(3px);
         height: 100%;
+
+        &__inner {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        &__user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+
+            h2 {
+                @include Text-base;
+            }
+        }
+        &__menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        &__logout {
+            @include Text-large;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: $white;
+            padding: 15px 30px;
+            cursor: pointer;
+            gap: 20px;
+            transition: background-color 0.2;
+
+            &:hover {
+                background: $grey-30;
+            }
+        }
+    }
+
+    .link {
+        @include Text-large;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: $white;
+        padding: 15px 30px;
+        cursor: pointer;
+        gap: 20p;
+        text-decoration: none;
+        transition: background-color 0.2;
+
+        &:hover {
+            background: $grey-30;
+        }
     }
 }
 </style>
