@@ -51,7 +51,7 @@ class User extends Authenticatable
     public function friends()
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id', 'id', 'id')
-            ->wherePivot('accepted,true')
+            ->wherePivot('accepted', true)
             ->withPivot('user_id', 'friend_id', 'accepted')
         ;
     }
@@ -59,7 +59,7 @@ class User extends Authenticatable
     public function getAllFriends()
     {
         return DB::table("users")
-            ->join('friends', 'users.id', '=', 'friends.friend.id')
+            ->join('friends', 'users.id', '=', 'friends.friend_id')
             ->where('friends.user_id', "=", $this->id)
             ->where('friends.accepted', true)
             ->select('users.*', 'friends.user_id as pivot_user_id', 'friends.friend_id as pivot_friend_id', 'friends.accepted as pivot_accepted')

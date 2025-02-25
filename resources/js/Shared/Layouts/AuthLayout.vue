@@ -3,8 +3,10 @@ import { router, Link, usePage } from "@inertiajs/vue3";
 import { LayoutRoutes } from "~/Routing/index";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/vue/16/solid";
 import Avatar from "~/Components/Avatar/Avatar.vue";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { IUser } from "~/Types/User";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 const page = usePage();
 const authUser: IUser = computed(() => page.props.auth.user);
@@ -12,6 +14,19 @@ const authUser: IUser = computed(() => page.props.auth.user);
 async function logout() {
     await router.post("/logout");
 }
+
+onMounted(() => {
+    window.Pusher = Pusher;
+    window.Echo = new Echo({
+        broadcaster: "pusher",
+        key: import.meta.env.VITE_PUSHER_APP_KEY,
+        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+        wsHost: "127.0.0.1",
+        wsPort: 6001,
+        forseTLS: false,
+        disabledStats: false,
+    });
+});
 </script>
 
 <template>
@@ -19,7 +34,7 @@ async function logout() {
         <nav class="layout__navbar navbar">
             <div class="navbar__inner">
                 <div class="navbar__user">
-                    <Avatar size="small" />
+                    <Avatar :avatar="authUser.avatar" size="small" />
                     <h2>{{ authUser.name }}</h2>
                 </div>
                 <div class="navbar__menu">

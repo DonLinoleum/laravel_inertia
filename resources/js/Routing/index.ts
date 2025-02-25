@@ -19,7 +19,7 @@ export const LayoutRoutes: Route[] = [
     },
     {
         label: "Друзья",
-        url: "/friend",
+        url: "/friends",
         icon: UsersIcon,
     },
     {

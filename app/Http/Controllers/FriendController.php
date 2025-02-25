@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Inertia\Inertia;
 
-class FriendController extends COntroller
+class FriendController extends Controller
 {
     public function index()
     {
@@ -12,6 +12,6 @@ class FriendController extends COntroller
         $users = $user->allUsersExcludingRelations();
         $subscriptions = $user->subscriptions;
         $subsribers = $user->subscribers;
-        return Inertia::render("Friends\Index");
+        return Inertia::render("Friends/Index", compact('friends', 'users', 'subscriptions', 'subsribers'));
     }
 }
