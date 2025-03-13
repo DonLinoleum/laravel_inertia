@@ -4,5 +4,6 @@ import UButton from "./UButton/UButton.vue";
 import Avatar from "./Avatar/Avatar.vue";
 import AvatarUploader from "./Avatar/AvatarUploader.vue";
 import UCard from "./UCard/UCard.vue";
+import URadio from "./URadio/URadio.vue";
 
-export { UTabs, UInput, UButton, Avatar, AvatarUploader,UCard };
+export { UTabs, UInput, UButton, Avatar, AvatarUploader,UCard, URadio };

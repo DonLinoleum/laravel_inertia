@@ -7,13 +7,16 @@ import { computed, onMounted } from "vue";
 import { IUser } from "~/Types/User";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { useToast } from "vue-toastification";
 
 const page = usePage();
 const authUser: IUser = computed(() => page.props.auth.user);
 
-async function logout() {
+const toast_element = useToast();
+
+const toast = async function logout() {
     await router.post("/logout");
-}
+};
 
 onMounted(() => {
     window.Pusher = Pusher;
@@ -23,9 +26,28 @@ onMounted(() => {
         cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
         wsHost: "127.0.0.1",
         wsPort: 6001,
-        forseTLS: false,
+        forceTLS: false,
         disabledStats: false,
     });
+    /* window.Echo.connector.pusher.connection.bind("connected", () => {
+        console.log("connected");
+    });*/
+
+    const userId = authUser?.value.id;
+    if (userId) {
+        const channel = window.Echo.private(`App.Models.User.${userId}`);
+        if (channel) {
+            channel.stopListening(`App.Models.User.${userId}`);
+        }
+        channel.notification((notification) => {
+            toast_element.success(notification.message);
+        });
+        /* window.Echo.private(`notifications.${userId}`).notification(
+            (notification) => {
+                console.log(notification);
+            },
+        );*/
+    }
 });
 </script>
 

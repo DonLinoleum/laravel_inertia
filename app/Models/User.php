@@ -77,6 +77,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id', 'id', 'id')
             ->wherePivot('accepted', false)
+            ->withPivot('id');
         ;
     }
 
@@ -84,6 +85,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id', 'id', 'id')
             ->wherePivot('accepted', false)
+            ->withPivot('id');
         ;
     }
 
@@ -100,5 +102,21 @@ class User extends Authenticatable
         return User::query()->whereNotIn('id', $excludedIds)->orderBy('name')->get();
     }
 
+    public function acceptRequestById(int $friendship_id): bool
+    {
+        $friendship = DB::table("friends")->where('id', $friendship_id)->first();
+        if (!$friendship || ($friendship->user_id != $this->id))
+            return false;
+        return DB::table('friends')
+            ->where('id', $friendship_id)
+            ->update(['accepted' => true]);
+    }
 
+    public function chats()
+    {
+        return Chat::where(function (Builder $query) {
+            $query->where('user_one_id', "=", $this->id)
+                ->orWhere('user_two_id', "=", $this->id);
+        })->get();
+    }
 }
